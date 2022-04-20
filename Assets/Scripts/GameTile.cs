@@ -7,6 +7,7 @@ public class GameTile : MonoBehaviour
     [SerializeField] private Transform _arrow;
 
     private GameTile _north, _east, _south, _west, _nextOnPath;
+    private GameTileContent _content;
     private int _distance;
     private Quaternion _northRotation = Quaternion.Euler(90f, 0f, 90f);
     private Quaternion _eastRotation = Quaternion.Euler(90f, 90f, 90f);
@@ -15,6 +16,20 @@ public class GameTile : MonoBehaviour
     public bool HasPath => _distance != int.MaxValue;
     public bool IsAlternative { get; set; }
 
+    public GameTileContent Content
+    {
+        get => _content;
+        set
+        {
+            if (_content != null)
+            {
+                _content.Recycle();
+            }
+
+            _content = value;
+            _content.transform.localPosition = transform.localPosition;
+        }
+    }
     public static void MakeEastWestNeighbors(GameTile east, GameTile west)
     {
         west._east = east;
@@ -66,6 +81,7 @@ public class GameTile : MonoBehaviour
 
         neighbor._distance = _distance + 1;
         neighbor._nextOnPath = this;
-        return neighbor;
+        // не добавляем клетки со стенами в границу поиска
+        return neighbor.Content.Type != GameTileContentTipe.Wall ? neighbor : null; 
     }
 }
