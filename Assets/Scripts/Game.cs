@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//отвечает за основной функционал и управляет игрой
 public class Game : MonoBehaviour
 {
-    [SerializeField] private Vector2Int _boardSize;
-    [SerializeField] private GameBoard _board;
-    [SerializeField] private Camera _mainCamera;
-    [SerializeField] private GameTileContentFactory _contentFactory;
-    private Ray TouchRay => _mainCamera.ScreenPointToRay(Input.mousePosition);
+    [SerializeField] private Vector2Int _boardSize; // задаём игровое поле
+    [SerializeField] private GameBoard _board; // ссылка на поле
+    [SerializeField] private Camera _mainCamera; // ссылка на главную камеру
+    [SerializeField] private GameTileContentFactory _contentFactory; // ссылка на фабрику
+    private Ray TouchRay => _mainCamera.ScreenPointToRay(Input.mousePosition); // конвертируем позицию мыши в луч
     private void Start()
     {
         _board.Init(_boardSize, _contentFactory);
@@ -27,7 +28,7 @@ public class Game : MonoBehaviour
         }
     }
 
-    private void HandleTouch()
+    private void HandleTouch() // берём тайл по лучу, если не нулл, присваиваем контент из фабрики
     {
         GameTile tile = _board.GetTile(TouchRay);
         if (tile != null)
