@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a11e05a2ca894c8ca07495637e0feec5, type: 3}
+  m_Name: EnemyFactory
+  m_EditorClassIdentifier: 
+  _enemyPref: {fileID: 1743637977099291136, guid: 8d967ec0230391546ab853a179492211, type: 3}
+  _scale:
+    _min: 0.34978142
+    _max: 1.5
+  _pathOffset:
+    _min: -0.27341247
+    _max: 0.24010003
+  _speedRange:
+    _min: 0.2
+    _max: 2.0206122
