@@ -6,7 +6,8 @@ public enum GameTileContentTipe
 {
     Empty,
     Destination,
-    Wall
+    Wall,
+    SpawnPoint
 }
 // отвечает за тип ячейки
 public class GameTileContent : MonoBehaviour

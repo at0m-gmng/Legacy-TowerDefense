@@ -15,3 +15,4 @@ MonoBehaviour:
   _destinationPref: {fileID: 834782758293543397, guid: 5d000b5e01a741f4daaff6fdc01dcf36, type: 3}
   _emptyPref: {fileID: 8991052986128569716, guid: ef00af597e4367c4ca91b1885ff2bc4b, type: 3}
   _wall: {fileID: 1232518349233177913, guid: 81a395ebec94d1e4db823e333b775888, type: 3}
+  _spawnPointPref: {fileID: 5122477335355819225, guid: 61c8fd7726125734f96404a11dd870a1, type: 3}

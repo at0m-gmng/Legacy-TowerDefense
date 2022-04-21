@@ -10,13 +10,17 @@ public class GameTile : MonoBehaviour
     private GameTile _north, _east, _south, _west, _nextOnPath; //переменные для нахождение соседей и следующей клетки на поля
     private GameTileContent _content; // ссылка на контент
     private int _distance; // кол-во ячеек до пункта назначения
+    
     private Quaternion _northRotation = Quaternion.Euler(90f, 0f, 90f); // переменные вращения для каждого направления
     private Quaternion _eastRotation = Quaternion.Euler(90f, 90f, 90f);
     private Quaternion _southRotation = Quaternion.Euler(90f, 180f, 90f);
     private Quaternion _westRotation = Quaternion.Euler(90f, 270f, 90f);
     public bool HasPath => _distance != int.MaxValue; //путь назначения 
     public bool IsAlternative { get; set; } // поле для чередования клеток
-
+    public GameTile NextTileOnPath => _nextOnPath;
+    public Vector3 ExitPoint { get; private set; }
+    
+    public Direction PathDirection { get; private set; } // хранит направление пути
     public GameTileContent Content
     {
         get => _content;
@@ -52,14 +56,15 @@ public class GameTile : MonoBehaviour
     {
         _distance = 0;
         _nextOnPath = null;
+        ExitPoint = transform.localPosition;
     }
 
     
     //вызываем GrowPathTo для каждого из соседей
-    public GameTile GrowPathNorth => GrowPathTo(_north);
-    public GameTile GrowPathSouth => GrowPathTo(_south);
-    public GameTile GrowPathEast => GrowPathTo(_east);
-    public GameTile GrowPathWest => GrowPathTo(_west);
+    public GameTile GrowPathNorth => GrowPathTo(_north, Direction.South);
+    public GameTile GrowPathSouth => GrowPathTo(_south, Direction.North);
+    public GameTile GrowPathEast => GrowPathTo(_east, Direction.West);
+    public GameTile GrowPathWest => GrowPathTo(_west, Direction.East);
 
     public void ShowPath() // отвечает за правильно отображение стрелок
     {
@@ -77,14 +82,15 @@ public class GameTile : MonoBehaviour
 
     }
     
-    private GameTile GrowPathTo(GameTile neighbor) // вызывается только для клеток, имеющих _distance
+    private GameTile GrowPathTo(GameTile neighbor, Direction direction) // вызывается только для клеток, имеющих _distance
     {
         if (!HasPath || neighbor == null || neighbor.HasPath)
             return null;
         
         neighbor._distance = _distance + 1;
         neighbor._nextOnPath = this;
-        // не добавляем клетки со стенами в границу поиска, чтобы стены блокировали путь
-        return neighbor.Content.Type != GameTileContentTipe.Wall ? neighbor : null; 
+        neighbor.ExitPoint = neighbor.transform.localPosition + direction.GetHalfVector(); 
+        neighbor.PathDirection = direction;
+        return neighbor.Content.Type != GameTileContentTipe.Wall ? neighbor : null; // не добавляем клетки со стенами в границу поиска, чтобы стены блокировали путь
     }
 }

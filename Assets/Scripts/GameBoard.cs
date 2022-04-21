@@ -12,7 +12,10 @@ public class GameBoard : MonoBehaviour
     private Vector2Int _size; // размер поля
     private GameTile[] _tiles; // хранит созданные tile
     private Queue<GameTile> _searchFrontier = new Queue<GameTile>();
+    private List<GameTile> _spawnPoints = new List<GameTile>(); // хранит точки спавна
     private GameTileContentFactory _contentFactory; //граница поиска //клетки, добавленные к пути, но ещё не увеличившие путь
+
+    public int SpawnPointCount => _spawnPoints.Count;
 
     // генерируем поле
     public void Init(Vector2Int size, GameTileContentFactory contentFactory) // добавим пустой контент из фабрики всем клеткам
@@ -49,6 +52,7 @@ public class GameBoard : MonoBehaviour
             }
         }
         ToggleDestination(_tiles[_tiles.Length/2]); // устанавливаем при старте одну начальную позицию в центре
+        ToggleSpawnPoint(_tiles[0]); // первый элемент как точка спавна по умолчанию
         FindPath();
     }
 
@@ -138,6 +142,23 @@ public class GameBoard : MonoBehaviour
             }
         }
     }
+    public void ToggleSpawnPoint(GameTile tile) // тумблер переключения между обычной клеткой и точкой спавна
+    {
+        //точки спавна не влияют на поиск пути, поэтому после их добавления не нужно ничего пересчитывать
+        if (tile.Content.Type == GameTileContentTipe.SpawnPoint)
+        {
+            if (_spawnPoints.Count > 1) // должна быть хотя бы одна точка спавна
+            {
+                _spawnPoints.Remove(tile);
+                tile.Content = _contentFactory.Get(GameTileContentTipe.Empty);
+            }
+        }
+        else if(tile.Content.Type == GameTileContentTipe.Empty)
+        {
+            tile.Content = _contentFactory.Get(GameTileContentTipe.SpawnPoint);
+            _spawnPoints.Add(tile);
+        }
+    }
 
     public void ToggleDestination(GameTile tile) // тумблер переключения между обычной клеткой и пунктом назначения
     {
@@ -171,5 +192,10 @@ public class GameBoard : MonoBehaviour
         }
 
         return null;
+    }
+
+    public GameTile GetSpawnPoint(int index)
+    {
+        return _spawnPoints[index];
     }
 }

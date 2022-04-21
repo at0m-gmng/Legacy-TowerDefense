@@ -5,11 +5,12 @@ using UnityEngine.SceneManagement;
 
 // фабрика для контент тайлов
 [CreateAssetMenu]
-public class GameTileContentFactory : ScriptableObject
+public class GameTileContentFactory : GameObjectFactory
 {
     [SerializeField] private GameTileContent _destinationPref; // объекты типо контента
     [SerializeField] private GameTileContent _emptyPref;
     [SerializeField] private GameTileContent _wall;
+    [SerializeField] private GameTileContent _spawnPointPref;
     public void Reclaim(GameTileContent content) // передаётся контент, который уже не нужен
     {
         Destroy(content.gameObject);
@@ -25,6 +26,8 @@ public class GameTileContentFactory : ScriptableObject
                 return Get(_emptyPref);
             case GameTileContentTipe.Wall :
                 return Get(_wall);
+            case GameTileContentTipe.SpawnPoint :
+                return Get(_spawnPointPref);
             
         }
 
@@ -33,32 +36,9 @@ public class GameTileContentFactory : ScriptableObject
 
     private GameTileContent Get(GameTileContent prefab) // принимает префаб и создаёт объект контента
     {
-        GameTileContent instance = Instantiate(prefab);
+        GameTileContent instance = CreateGameObjectInstance(prefab);
         instance.OriginFactory = this;
-        MoveToFactoryScene(instance.gameObject);
         return instance; // возвращаем объект контента
     }
-    // фабрика будет содержать контент в отдельной сцене, которая будет подгружена в основную
-    private Scene _contentScene;
 
-    private void MoveToFactoryScene(GameObject o)
-    {
-        if (!_contentScene.isLoaded)
-        {
-            if (Application.isEditor) // прежде чем создавать сцену, проверим, существует ли она
-            {
-                _contentScene = SceneManager.GetSceneByName(name);
-                if (!_contentScene.isLoaded)
-                {
-                    _contentScene = SceneManager.CreateScene(name);
-                }
-            }
-            else
-            {
-                _contentScene = SceneManager.CreateScene(name);  
-            }
-        }
-        
-        SceneManager.MoveGameObjectToScene(o, _contentScene);
-    }
 }
