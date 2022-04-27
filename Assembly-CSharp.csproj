@@ -61,8 +61,10 @@
      <Compile Include="Assets\Scripts\GameBoard.cs" />
      <Compile Include="Assets\Scripts\GameTile.cs" />
      <Compile Include="Assets\Scripts\EnemyCollection.cs" />
-     <Compile Include="Assets\Scripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\FloatRange.cs" />
+     <Compile Include="Assets\Scripts\Enemy.cs" />
+     <Compile Include="Assets\Scripts\Tower.cs" />
+     <Compile Include="Assets\Scripts\TargetPoint.cs" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.4f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>

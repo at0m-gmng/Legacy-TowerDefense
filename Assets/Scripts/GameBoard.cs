@@ -14,7 +14,7 @@ public class GameBoard : MonoBehaviour
     private Queue<GameTile> _searchFrontier = new Queue<GameTile>();
     private List<GameTile> _spawnPoints = new List<GameTile>(); // хранит точки спавна
     private GameTileContentFactory _contentFactory; //граница поиска //клетки, добавленные к пути, но ещё не увеличившие путь
-
+    private List<GameTileContent> _contentToUpdate = new List<GameTileContent>();
     public int SpawnPointCount => _spawnPoints.Count;
 
     // генерируем поле
@@ -54,6 +54,14 @@ public class GameBoard : MonoBehaviour
         ToggleDestination(_tiles[_tiles.Length/2]); // устанавливаем при старте одну начальную позицию в центре
         ToggleSpawnPoint(_tiles[0]); // первый элемент как точка спавна по умолчанию
         FindPath();
+    }
+
+    public void GameUpdate()
+    {
+        for (int i = 0; i < _contentToUpdate.Count; i++)
+        {
+            _contentToUpdate[i].GameUpdate();
+        }
     }
 
     public bool FindPath() // метод по поиску пути
@@ -142,6 +150,34 @@ public class GameBoard : MonoBehaviour
             }
         }
     }
+    public void ToggleTower(GameTile tile) // тумблер переключения между обычной клеткой и стеной
+    {
+        if (tile.Content.Type == GameTileContentTipe.Tower)
+        {
+            _contentToUpdate.Remove(tile.Content);
+            tile.Content = _contentFactory.Get(GameTileContentTipe.Empty);
+            FindPath();
+        }
+        else if(tile.Content.Type == GameTileContentTipe.Empty)
+        {
+            tile.Content = _contentFactory.Get(GameTileContentTipe.Tower);
+
+            if (FindPath()) // стены должны блокировать проверку поиска пути
+            {
+                _contentToUpdate.Add(tile.Content);
+            }
+            else
+            {
+                tile.Content = _contentFactory.Get(GameTileContentTipe.Empty);
+                FindPath();
+            }
+        }        
+        else if(tile.Content.Type == GameTileContentTipe.Wall)
+        {
+            tile.Content = _contentFactory.Get(GameTileContentTipe.Tower);
+            _contentToUpdate.Add(tile.Content);
+        }
+    }
     public void ToggleSpawnPoint(GameTile tile) // тумблер переключения между обычной клеткой и точкой спавна
     {
         //точки спавна не влияют на поиск пути, поэтому после их добавления не нужно ничего пересчитывать
@@ -181,7 +217,7 @@ public class GameBoard : MonoBehaviour
     public GameTile GetTile(Ray ray) // проверяем, что пользователь нажал на клетку
     {
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit)) // проверяем, попал ли луч во что-то
+        if (Physics.Raycast(ray, out hit, float.MaxValue, 1)) // проверяем, попал ли луч во что-то
         {
             int x = (int) (hit.point.x + _size.x * .5f); // определяем клетку, в которую попали
             int y = (int) (hit.point.z + _size.y * .5f);

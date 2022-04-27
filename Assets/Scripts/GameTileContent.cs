@@ -7,15 +7,23 @@ public enum GameTileContentTipe
     Empty,
     Destination,
     Wall,
-    SpawnPoint
+    SpawnPoint,
+    Tower
 }
 // отвечает за тип ячейки
+[SelectionBase]
 public class GameTileContent : MonoBehaviour
 {
     [SerializeField] private GameTileContentTipe _type;
     
     public GameTileContentTipe Type => _type;
     public GameTileContentFactory OriginFactory { get; set; } //ссылка на фабрику
+    public bool IsBlockingPath => Type == GameTileContentTipe.Wall || Type == GameTileContentTipe.Tower;
+
+    public virtual void GameUpdate()
+    {
+        
+    }
 
     public void Recycle() // возвращает себя за ненадобностью
     {

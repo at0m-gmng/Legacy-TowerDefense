@@ -11,6 +11,7 @@ public class GameTileContentFactory : GameObjectFactory
     [SerializeField] private GameTileContent _emptyPref;
     [SerializeField] private GameTileContent _wall;
     [SerializeField] private GameTileContent _spawnPointPref;
+    [SerializeField] private GameTileContent _towerPref;
     public void Reclaim(GameTileContent content) // передаётся контент, который уже не нужен
     {
         Destroy(content.gameObject);
@@ -28,6 +29,8 @@ public class GameTileContentFactory : GameObjectFactory
                 return Get(_wall);
             case GameTileContentTipe.SpawnPoint :
                 return Get(_spawnPointPref);
+            case GameTileContentTipe.Tower :
+                return Get(_towerPref);
             
         }
 

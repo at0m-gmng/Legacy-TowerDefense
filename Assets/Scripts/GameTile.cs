@@ -91,6 +91,6 @@ public class GameTile : MonoBehaviour
         neighbor._nextOnPath = this;
         neighbor.ExitPoint = neighbor.transform.localPosition + direction.GetHalfVector(); 
         neighbor.PathDirection = direction;
-        return neighbor.Content.Type != GameTileContentTipe.Wall ? neighbor : null; // не добавляем клетки со стенами в границу поиска, чтобы стены блокировали путь
+        return neighbor.Content.IsBlockingPath ? null : neighbor; // не добавляем клетки со стенами в границу поиска, чтобы стены блокировали путь
     }
 }

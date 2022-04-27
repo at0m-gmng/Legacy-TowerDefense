@@ -7,17 +7,22 @@ public class Enemy : MonoBehaviour
     private GameTile _tileFrom, _tileTo;
     private Vector3 _positionFrom, _positionTo;
     private float _progress, _progressFactor;
-
     private Direction _direction;
     private DirectionChange _directionChange;
     private float _directionAngleFrom, _directionAngleTo;
-    public EnemyFactory OriginFactory { get; set; }
     private float _pathOffset, _speedRange;
+
+    public float Scale { get; private set; }
+    public float Health { get; private set; }
+    public EnemyFactory OriginFactory { get; set; }
+    
     public void Init(float scale, float pathOffset, float speedRange)
     {
         _model.localScale = new Vector3(scale, scale, scale);
         _pathOffset = pathOffset;
         _speedRange = speedRange;
+        Scale = scale;
+        Health = 100f * scale;
     }
 
     public void SpawnOn(GameTile tile)
@@ -31,6 +36,12 @@ public class Enemy : MonoBehaviour
 
     public bool GameUpdate() // жив ли враг, пока всегда истина
     {
+        if (Health <= 0f)
+        {
+            OriginFactory.Reclaim(this);
+            return false;
+        }
+        
         _progress += Time.deltaTime * _progressFactor; // скорость 1 tile в сек
         while (_progress >= 1f)
         {
@@ -54,6 +65,11 @@ public class Enemy : MonoBehaviour
             transform.localRotation = Quaternion.Euler(0f,angle,0f);
         }
         return true;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        Health -= damage;
     }
     // поворот зависит от смены направления
     private void PrepareForward()
