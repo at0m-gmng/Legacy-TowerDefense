@@ -150,7 +150,7 @@ public class GameBoard : MonoBehaviour
             }
         }
     }
-    public void ToggleTower(GameTile tile) // тумблер переключения между обычной клеткой и стеной
+    public void ToggleTower(GameTile tile, TowerType towerType) // тумблер переключения между обычной клеткой и стеной
     {
         if (tile.Content.Type == GameTileContentTipe.Tower)
         {
@@ -160,7 +160,7 @@ public class GameBoard : MonoBehaviour
         }
         else if(tile.Content.Type == GameTileContentTipe.Empty)
         {
-            tile.Content = _contentFactory.Get(GameTileContentTipe.Tower);
+            tile.Content = _contentFactory.Get(towerType);
 
             if (FindPath()) // стены должны блокировать проверку поиска пути
             {
@@ -174,7 +174,7 @@ public class GameBoard : MonoBehaviour
         }        
         else if(tile.Content.Type == GameTileContentTipe.Wall)
         {
-            tile.Content = _contentFactory.Get(GameTileContentTipe.Tower);
+            tile.Content = _contentFactory.Get(towerType);
             _contentToUpdate.Add(tile.Content);
         }
     }

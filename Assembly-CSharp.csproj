@@ -52,19 +52,26 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\WarFactory.cs" />
      <Compile Include="Assets\Scripts\GameObjectFactory.cs" />
+     <Compile Include="Assets\Scripts\WarEntity.cs" />
+     <Compile Include="Assets\Scripts\LaserTower.cs" />
      <Compile Include="Assets\Scripts\DirectionExtensions.cs" />
      <Compile Include="Assets\Scripts\EnemyFactory.cs" />
      <Compile Include="Assets\Scripts\GameTileContentFactory.cs" />
+     <Compile Include="Assets\Scripts\GameBehaviour.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
      <Compile Include="Assets\Scripts\GameTileContent.cs" />
      <Compile Include="Assets\Scripts\GameBoard.cs" />
-     <Compile Include="Assets\Scripts\GameTile.cs" />
-     <Compile Include="Assets\Scripts\EnemyCollection.cs" />
-     <Compile Include="Assets\Scripts\FloatRange.cs" />
-     <Compile Include="Assets\Scripts\Enemy.cs" />
+     <Compile Include="Assets\Scripts\Shell.cs" />
      <Compile Include="Assets\Scripts\Tower.cs" />
+     <Compile Include="Assets\Scripts\GameTile.cs" />
+     <Compile Include="Assets\Scripts\GameBehaviourCollection.cs" />
      <Compile Include="Assets\Scripts\TargetPoint.cs" />
+     <Compile Include="Assets\Scripts\FloatRange.cs" />
+     <Compile Include="Assets\Scripts\MortarTower.cs" />
+     <Compile Include="Assets\Scripts\Explosion.cs" />
+     <Compile Include="Assets\Scripts\Enemy.cs" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.4f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>

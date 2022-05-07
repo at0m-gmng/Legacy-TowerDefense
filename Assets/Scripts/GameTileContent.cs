@@ -10,6 +10,12 @@ public enum GameTileContentTipe
     SpawnPoint,
     Tower
 }
+// типы башен
+public enum TowerType
+{
+    Laser,
+    Mortar
+}
 // отвечает за тип ячейки
 [SelectionBase]
 public class GameTileContent : MonoBehaviour

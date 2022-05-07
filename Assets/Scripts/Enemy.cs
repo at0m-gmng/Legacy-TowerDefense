@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : GameBehaviour
 {
     [SerializeField] private Transform _model; // делаем так, чтобы враг двигался по 1/4 окружности за счёт своей модели
     
@@ -34,7 +34,7 @@ public class Enemy : MonoBehaviour
         PrepareIntro();
     }
 
-    public bool GameUpdate() // жив ли враг, пока всегда истина
+    public override bool GameUpdate() // жив ли враг, пока всегда истина
     {
         if (Health <= 0f)
         {
