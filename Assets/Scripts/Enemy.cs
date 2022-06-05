@@ -16,13 +16,13 @@ public class Enemy : GameBehaviour
     public float Health { get; private set; }
     public EnemyFactory OriginFactory { get; set; }
     
-    public void Init(float scale, float pathOffset, float speedRange)
+    public void Init(float scale, float pathOffset, float speedRange, float health)
     {
         _model.localScale = new Vector3(scale, scale, scale);
         _pathOffset = pathOffset;
         _speedRange = speedRange;
         Scale = scale;
-        Health = 100f * scale;
+        Health = health;
     }
 
     public void SpawnOn(GameTile tile)
