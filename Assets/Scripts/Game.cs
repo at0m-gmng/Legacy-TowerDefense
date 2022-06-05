@@ -18,11 +18,15 @@ public class Game : MonoBehaviour
     [SerializeField, Range(10, 100)] private int _startingPlayerHealth;
     private int _currentPlayerHealth;
 
+    [SerializeField, Range(5f, 30f)] private float _prepareTime = 10f;
+    private bool _isScenarioProcess;
+
     private GameBehaviourCollection _enemies = new GameBehaviourCollection();
     private GameBehaviourCollection _nonEnemies = new GameBehaviourCollection();
     private Ray TouchRay => _mainCamera.ScreenPointToRay(Input.mousePosition); // конвертируем позицию мыши в луч
     private TowerType _currentTowerType;
     private GameScenario.State _activeScenario;
+    private bool _isPaused;
 
     private static Game _instance;
 
@@ -44,6 +48,12 @@ public class Game : MonoBehaviour
 
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            _isPaused = !_isPaused;
+            Time.timeScale = _isPaused ? 0f : 1f;
+        }
+
         if(Input.GetKeyDown(KeyCode.R))
         {
             BeginNewGame();
@@ -67,17 +77,20 @@ public class Game : MonoBehaviour
             HandleAlternativeTouch();
         }
 
-        if(_currentPlayerHealth <= 0)
+        if(_isScenarioProcess)
         {
-            Debug.Log("Defeated!");
-            BeginNewGame();
-        }
+            if (_currentPlayerHealth <= 0)
+            {
+                Debug.Log("Defeated!");
+                BeginNewGame();
+            }
 
-        if(!_activeScenario.Progress() && _enemies.IsEmpty)
-        {
-            Debug.Log("Victory!");
-            BeginNewGame();
-            _activeScenario.Progress();
+            if (!_activeScenario.Progress() && _enemies.IsEmpty)
+            {
+                Debug.Log("Victory!");
+                BeginNewGame();
+                _activeScenario.Progress();
+            }
         }
 
         // Скрипт Game больше не выбирает, когда ему создавать врагов, отключаем логику
@@ -154,15 +167,29 @@ public class Game : MonoBehaviour
 
     private void BeginNewGame()
     {
+        _isScenarioProcess = false;
+        if (_prepareRoutine != null)
+        {
+            StopCoroutine(_prepareRoutine);
+        }
         _enemies.Clear();
         _nonEnemies.Clear();
         _board.Clear();
         _currentPlayerHealth = _startingPlayerHealth;
-        _activeScenario = _scenario.Begin();
+        _prepareRoutine = StartCoroutine(PrepareRoutine());
     }
 
     public static void EnemyReachedDestination()
     {
         _instance._currentPlayerHealth--;
+    }
+
+    private Coroutine _prepareRoutine;
+
+    private IEnumerator PrepareRoutine()
+    {
+        yield return new WaitForSeconds(_prepareTime);
+        _activeScenario = _scenario.Begin();
+        _isScenarioProcess = true;
     }
 }

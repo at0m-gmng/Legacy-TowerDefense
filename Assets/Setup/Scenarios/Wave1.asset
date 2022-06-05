@@ -15,5 +15,5 @@ MonoBehaviour:
   _spawnSequences:
   - _enemyFactory: {fileID: 11400000, guid: 029ebaf96013cb44daee92467c2cc5b4, type: 2}
     _enemyType: 2
-    _amount: 10
-    _cooldown: 2
+    _amount: 20
+    _cooldown: 0.5
