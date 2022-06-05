@@ -38,7 +38,7 @@ public class Enemy : GameBehaviour
     {
         if (Health <= 0f)
         {
-            OriginFactory.Reclaim(this);
+            Recycle();
             return false;
         }
         
@@ -47,7 +47,8 @@ public class Enemy : GameBehaviour
         {
             if (_tileTo == null)
             {
-                OriginFactory.Reclaim(this);
+                Game.EnemyReachedDestination();
+                Recycle();
                 return false;
             }
             _progress = (_progress - 1f) / _progressFactor;
@@ -71,6 +72,12 @@ public class Enemy : GameBehaviour
     {
         Health -= damage;
     }
+
+    public override void Recycle()
+    {
+        OriginFactory.Reclaim(this);
+    }
+
     // поворот зависит от смены направления
     private void PrepareForward()
     {

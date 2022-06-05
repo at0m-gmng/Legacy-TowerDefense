@@ -48,12 +48,13 @@ public class GameBoard : MonoBehaviour
                 if ((y & 1) == 0) // для у наоборот, для создания шахматного порядка
                     tile.IsAlternative = !tile.IsAlternative;
 
-                tile.Content = _contentFactory.Get(GameTileContentTipe.Empty); // добавим пустой контент из фабрики всем клеткам
+                //tile.Content = _contentFactory.Get(GameTileContentTipe.Empty); // добавим пустой контент из фабрики всем клеткам
             }
         }
-        ToggleDestination(_tiles[_tiles.Length/2]); // устанавливаем при старте одну начальную позицию в центре
-        ToggleSpawnPoint(_tiles[0]); // первый элемент как точка спавна по умолчанию
-        FindPath();
+        //ToggleDestination(_tiles[_tiles.Length/2]); // устанавливаем при старте одну начальную позицию в центре
+        //ToggleSpawnPoint(_tiles[0]); // первый элемент как точка спавна по умолчанию
+        //FindPath();
+        Clear();
     }
 
     public void GameUpdate()
@@ -233,5 +234,17 @@ public class GameBoard : MonoBehaviour
     public GameTile GetSpawnPoint(int index)
     {
         return _spawnPoints[index];
+    }
+
+    public void Clear()
+    {
+        foreach (var tile in _tiles)
+        {
+            tile.Content = _contentFactory.Get(GameTileContentTipe.Empty);
+        }
+        _spawnPoints.Clear();
+        _contentToUpdate.Clear();
+        ToggleDestination(_tiles[_tiles.Length / 2]);
+        ToggleSpawnPoint(_tiles[0]);
     }
 }

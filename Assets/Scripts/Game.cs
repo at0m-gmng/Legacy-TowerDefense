@@ -14,6 +14,9 @@ public class Game : MonoBehaviour
     [SerializeField] private GameTileContentFactory _contentFactory; // ссылка на фабрику
     [SerializeField] private WarFactory _warFactory; // для передачи снаряда от мортиры к nonEnemies
     [SerializeField] private GameScenario _scenario;
+    
+    [SerializeField, Range(10, 100)] private int _startingPlayerHealth;
+    private int _currentPlayerHealth;
 
     private GameBehaviourCollection _enemies = new GameBehaviourCollection();
     private GameBehaviourCollection _nonEnemies = new GameBehaviourCollection();
@@ -35,11 +38,17 @@ public class Game : MonoBehaviour
     private void Start()
     {
         _board.Init(_boardSize, _contentFactory);
-        _activeScenario = _scenario.Begin();
+        //_activeScenario = _scenario.Begin();
+        BeginNewGame();
     }
 
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            BeginNewGame();
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             _currentTowerType = TowerType.Laser;
@@ -58,6 +67,19 @@ public class Game : MonoBehaviour
             HandleAlternativeTouch();
         }
 
+        if(_currentPlayerHealth <= 0)
+        {
+            Debug.Log("Defeated!");
+            BeginNewGame();
+        }
+
+        if(!_activeScenario.Progress() && _enemies.IsEmpty)
+        {
+            Debug.Log("Victory!");
+            BeginNewGame();
+            _activeScenario.Progress();
+        }
+
         // Скрипт Game больше не выбирает, когда ему создавать врагов, отключаем логику
         //_spawnProgress += _spawnSpeed * Time.deltaTime;
         //while (_spawnProgress >= 1f)
@@ -66,7 +88,7 @@ public class Game : MonoBehaviour
         //    SpawnEnemy();
         //}
 
-        _activeScenario.Progress();
+        //_activeScenario.Progress();
 
         _enemies.GameUpdate();
         Physics.SyncTransforms(); // синхронизируем физику
@@ -128,5 +150,19 @@ public class Game : MonoBehaviour
                 _board.ToggleSpawnPoint(tile);
             }
         }
+    }
+
+    private void BeginNewGame()
+    {
+        _enemies.Clear();
+        _nonEnemies.Clear();
+        _board.Clear();
+        _currentPlayerHealth = _startingPlayerHealth;
+        _activeScenario = _scenario.Begin();
+    }
+
+    public static void EnemyReachedDestination()
+    {
+        _instance._currentPlayerHealth--;
     }
 }

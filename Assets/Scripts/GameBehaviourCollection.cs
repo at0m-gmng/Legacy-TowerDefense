@@ -7,6 +7,8 @@ public class GameBehaviourCollection
 {
     private List<GameBehaviour> _behaviours = new List<GameBehaviour>();
 
+
+    public bool IsEmpty => _behaviours.Count == 0;
     public void Add(GameBehaviour behaviour) //для добавления врага
     {
         _behaviours.Add(behaviour);
@@ -24,5 +26,14 @@ public class GameBehaviourCollection
                 i -= 1;
             }
         }
+    }
+
+    public void Clear()
+    {
+        for (int i = 0; i < _behaviours.Count; i++)
+        {
+            _behaviours[i].Recycle();
+        }
+        _behaviours.Clear();
     }
 }
