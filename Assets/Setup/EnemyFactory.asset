@@ -12,13 +12,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a11e05a2ca894c8ca07495637e0feec5, type: 3}
   m_Name: EnemyFactory
   m_EditorClassIdentifier: 
-  _enemyPref: {fileID: 1743637977099291136, guid: 8d967ec0230391546ab853a179492211, type: 3}
-  _scale:
-    _min: 0.34978142
-    _max: 1.5
-  _pathOffset:
-    _min: -0.27341247
-    _max: 0.24010003
-  _speedRange:
-    _min: 0.2
-    _max: 2.0206122
+  _small:
+    EnemyPref: {fileID: 1738323950470742189, guid: fe3c1e15461e94843a950837bc24baa0, type: 3}
+    Scale:
+      _min: 0.5
+      _max: 1
+    PathOffset:
+      _min: -0.3
+      _max: 0.3
+    SpeedRange:
+      _min: 2
+      _max: 3
+    Health:
+      _min: 140
+      _max: 180
+  _medium:
+    EnemyPref: {fileID: 883351683532599516, guid: f861850418c57634ea63ab12ae624d88, type: 3}
+    Scale:
+      _min: 1
+      _max: 1.5
+    PathOffset:
+      _min: -0.1
+      _max: 0.1
+    SpeedRange:
+      _min: 1.2
+      _max: 1.7
+    Health:
+      _min: 400
+      _max: 500
+  _large:
+    EnemyPref: {fileID: 1743637977099291136, guid: 8d967ec0230391546ab853a179492211, type: 3}
+    Scale:
+      _min: 1.5
+      _max: 1.5
+    PathOffset:
+      _min: 0
+      _max: 0
+    SpeedRange:
+      _min: 0.5
+      _max: 0.75
+    Health:
+      _min: 600
+      _max: 900

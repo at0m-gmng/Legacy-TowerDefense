@@ -4,7 +4,8 @@ using UnityEngine;
 [CreateAssetMenu]
 public class EnemyFactory : GameObjectFactory
 {
-    [Serializable] class EnemyConfig
+    [Serializable] 
+    class EnemyConfig
     {
         public Enemy EnemyPref; // ссылка на префаб врага
         [FloatRangeSlider(0f, 1.5f)] public FloatRange Scale = new FloatRange(0.5f); // Раздомизация размеров
@@ -32,8 +33,6 @@ public class EnemyFactory : GameObjectFactory
                       config.SpeedRange.RandomValueRange, config.Health.RandomValueRange);
         return instance;
     }
-
-
 
     public void Reclaim(Enemy enemy)
     {

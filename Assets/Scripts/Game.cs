@@ -12,16 +12,20 @@ public class Game : MonoBehaviour
     [SerializeField] private GameBoard _board; // ссылка на поле
     [SerializeField] private Camera _mainCamera; // ссылка на главную камеру
     [SerializeField] private GameTileContentFactory _contentFactory; // ссылка на фабрику
-    [SerializeField] private EnemyFactory _enemyFactory;
     [SerializeField] private WarFactory _warFactory; // для передачи снаряда от мортиры к nonEnemies
-    [SerializeField, Range(0.1f, 10f)] private float _spawnSpeed; // скорость появления врагов
+    [SerializeField] private GameScenario _scenario;
 
     private GameBehaviourCollection _enemies = new GameBehaviourCollection();
     private GameBehaviourCollection _nonEnemies = new GameBehaviourCollection();
-    private float _spawnProgress; 
     private Ray TouchRay => _mainCamera.ScreenPointToRay(Input.mousePosition); // конвертируем позицию мыши в луч
     private TowerType _currentTowerType;
+    private GameScenario.State _activeScenario;
+
     private static Game _instance;
+
+    //[SerializeField] private EnemyFactory _enemyFactory;
+    //[SerializeField, Range(0.1f, 10f)] private float _spawnSpeed; // скорость появления врагов
+    //private float _spawnProgress; 
 
     private void OnEnable()
     {
@@ -31,6 +35,7 @@ public class Game : MonoBehaviour
     private void Start()
     {
         _board.Init(_boardSize, _contentFactory);
+        _activeScenario = _scenario.Begin();
     }
 
     private void Update()
@@ -53,12 +58,16 @@ public class Game : MonoBehaviour
             HandleAlternativeTouch();
         }
 
-        _spawnProgress += _spawnSpeed * Time.deltaTime;
-        while (_spawnProgress >= 1f)
-        {
-            _spawnProgress -= 1f;
-            SpawnEnemy();
-        }
+        // Скрипт Game больше не выбирает, когда ему создавать врагов, отключаем логику
+        //_spawnProgress += _spawnSpeed * Time.deltaTime;
+        //while (_spawnProgress >= 1f)
+        //{
+        //    _spawnProgress -= 1f;
+        //    SpawnEnemy();
+        //}
+
+        _activeScenario.Progress();
+
         _enemies.GameUpdate();
         Physics.SyncTransforms(); // синхронизируем физику
         _board.GameUpdate();
@@ -78,12 +87,15 @@ public class Game : MonoBehaviour
         return explosion;
     }
 
-    private void SpawnEnemy()
+    // модифициурем в статику
+    // добавляем фабрику, тип врага
+    // вызов идет через собственную статическую ссылку
+    public static void SpawnEnemy(EnemyFactory enemyFactory, EnemyType enemyType)
     {
-        GameTile spawnPoint = _board.GetSpawnPoint(Random.Range(0, _board.SpawnPointCount)); // берём случайную точку спавна
-        Enemy enemy = _enemyFactory.Get(((EnemyType)Random.Range(0, 3))); // создаём врага
+        GameTile spawnPoint = _instance._board.GetSpawnPoint(Random.Range(0, _instance._board.SpawnPointCount)); // берём случайную точку спавна
+        Enemy enemy = enemyFactory.Get(enemyType); // создаём врага
         enemy.SpawnOn(spawnPoint); // далее передаём эту точку врагу как стартовую позицию
-        _enemies.Add(enemy);
+        _instance._enemies.Add(enemy);
     }
 
     private void HandleTouch() // берём тайл по лучу, если не нулл, присваиваем контент из фабрики

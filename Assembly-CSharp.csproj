@@ -77,6 +77,9 @@
     <Compile Include="Assets\Scripts\GameBehaviourCollection.cs" />
     <Compile Include="Assets\Scripts\MortarTower.cs" />
     <Compile Include="Assets\Scripts\EnemyType.cs" />
+    <Compile Include="Assets\Scripts\EnemySpawnSequence.cs" />
+    <Compile Include="Assets\Scripts\EnemyWave.cs" />
+    <Compile Include="Assets\Scripts\GameScenario.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
