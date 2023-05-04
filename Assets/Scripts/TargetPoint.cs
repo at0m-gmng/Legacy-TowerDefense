@@ -13,6 +13,8 @@ public class TargetPoint : MonoBehaviour
     public Vector3 Position => transform.position;
     public float ColliderSize { get; private set; }
 
+    public bool IsEnabled { get; set; } = false;
+
     private void Awake()
     {
         Enemy = transform.root.GetComponent<Enemy>(); // берём Enemy у высшего в иерархии компонента

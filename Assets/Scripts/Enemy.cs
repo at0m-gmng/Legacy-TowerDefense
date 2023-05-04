@@ -3,6 +3,7 @@
 public class Enemy : GameBehaviour
 {
     [SerializeField] private Transform _model; // делаем так, чтобы враг двигался по 1/4 окружности за счёт своей модели
+    [SerializeField] private EnemyView _enemyView;
     
     private GameTile _tileFrom, _tileTo;
     private Vector3 _positionFrom, _positionTo;
@@ -23,6 +24,7 @@ public class Enemy : GameBehaviour
         _speedRange = speedRange;
         Scale = scale;
         Health = health;
+        _enemyView.Init(this);
     }
 
     public void SpawnOn(GameTile tile)
@@ -36,9 +38,15 @@ public class Enemy : GameBehaviour
 
     public override bool GameUpdate() // жив ли враг, пока всегда истина
     {
+        if (_enemyView.IsInited == false)
+        {
+            return true;
+        }
+        
         if (Health <= 0f)
         {
-            Recycle();
+            DisableView();
+            _enemyView.Die();
             return false;
         }
         
@@ -157,6 +165,12 @@ public class Enemy : GameBehaviour
         _model.localPosition = new Vector3(_pathOffset, 0f);
         transform.localRotation = _direction.GetRotation();
         _progressFactor = 2f * _speedRange;
+    }
+
+    private void DisableView()
+    {
+        _enemyView.GetComponent<Collider>().enabled = false;
+        _enemyView.GetComponent<TargetPoint>().IsEnabled = false;
     }
     
 }

@@ -32,7 +32,7 @@ public abstract class Tower : GameTileContent
 
         Vector3 myPosition = transform.localPosition;
         Vector3 targetPosition = target.Position;
-        if (Vector3.Distance(myPosition, targetPosition) > _targetingRange + target.ColliderSize*target.Enemy.Scale)
+        if (Vector3.Distance(myPosition, targetPosition) > _targetingRange + target.ColliderSize * target.Enemy.Scale || target.IsEnabled == false)
         {
             target = null;
             return false;
