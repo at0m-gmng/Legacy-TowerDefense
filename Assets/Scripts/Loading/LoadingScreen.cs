@@ -1,3 +1,6 @@
+using System;
+using System.Threading.Tasks;
+
 namespace Loading
 {
     using UnityEngine.UI;
@@ -45,10 +48,35 @@ namespace Loading
             _canvas.enabled = false;
         }
 
+        private void OnProgress(float progress) => _targetProgeress = progress;
+
         private void ResetFill()
         {
             _progressFill.value = 0;
             _targetProgeress = 0;
+        }
+
+        private async Task WaitForBarFill()
+        {
+            while (_progressFill.value < _targetProgeress)
+            {
+                await Task.Delay(1);
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(0.15f));
+        }
+
+        private IEnumerator UpdateProgressBar()
+        {
+            while (_canvas.enabled)
+            {
+                if (_progressFill.value < _targetProgeress)
+                {
+                    _progressFill.value += Time.deltaTime * _barSpeed;
+                }
+
+                yield return null;
+            }
         }
     }
 }
