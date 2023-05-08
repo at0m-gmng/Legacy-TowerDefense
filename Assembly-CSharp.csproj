@@ -57,6 +57,7 @@
      <Compile Include="Assets\Scripts\Loading\LoadingScreen.cs" />
      <Compile Include="Assets\Scripts\Field\GameBoard.cs" />
      <Compile Include="Assets\Scripts\Loading\ConfigOperation.cs" />
+     <Compile Include="Assets\Fantasy UI\Samples\IconPreview.cs" />
      <Compile Include="Assets\Scripts\Core\Constants.cs" />
      <Compile Include="Assets\Scripts\Towers\Tower.cs" />
      <Compile Include="Assets\Scripts\Towers\TargetPoint.cs" />
@@ -82,7 +83,6 @@
      <Compile Include="Assets\Scripts\Loading\MainMenu.cs" />
      <Compile Include="Assets\Scripts\Towers\MortarTower.cs" />
      <Compile Include="Assets\Scripts\Loading\UserInfoContainer.cs" />
-     <Compile Include="Assets\Fantasy UI\Samples\IconPreview.cs" />
      <Folder Include="Assets" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\Alien.shader" />
      <Folder Include="Assets\3D Game Kit - Character Pack\Characters\Chomper\Textures" />
@@ -110,7 +110,6 @@
      <Folder Include="Assets\Scripts\Waves" />
      <Folder Include="Assets\Sprites" />
      <Folder Include="Assets\3D Game Kit - Character Pack\Characters\Chomper" />
-     <Folder Include="Assets\Fantasy UI\PSD" />
      <Folder Include="Assets\3D Game Kit - Character Pack\Characters\Grenadier\Models" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\EyeBallsHD.shader" />
      <Folder Include="Assets\Scripts\Loading" />
@@ -129,10 +128,8 @@
      <Folder Include="Assets\3D Game Kit - Character Pack\Characters\Grenadier" />
      <Folder Include="Assets\Setup\Scenarios" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\ToonSkin.shader" />
-     <Folder Include="Assets\Fantasy UI\Resource Icons\Source" />
      <Folder Include="Assets\Mini Legion Rock Golem PBR HP Polyart\Animations" />
      <Folder Include="Assets\Fantasy UI\Simple Vector Icons\128px" />
-     <Folder Include="Assets\Fantasy UI\Simple Vector Icons\Source" />
      <Folder Include="Assets\Scripts\Towers" />
      <Folder Include="Assets\3D Game Kit - Character Pack\Characters\Chomper\Materials" />
      <Folder Include="Assets\3D Game Kit - Character Pack\Characters\Grenadier\Textures" />
