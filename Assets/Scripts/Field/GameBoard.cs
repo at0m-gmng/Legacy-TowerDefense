@@ -78,7 +78,7 @@ public class GameBoard : MonoBehaviour
         
         foreach (var t in _tiles) // т.к путей может быть несколько, добавим их в границу поиска
         {
-            if (t.Content.Type == GameTileContentTipe.Destination)
+            if (t.Content.Type == GameTileContentType.Destination)
             {
                 t.BecomeDistanation();
                 _searchFrontier.Enqueue(t);
@@ -134,97 +134,130 @@ public class GameBoard : MonoBehaviour
         return true;
     }
 
-    public void ToggleWall(GameTile tile) // тумблер переключения между обычной клеткой и стеной
+    public void Build(GameTile tile, GameTileContentType type)
     {
-        if (tile.Content.Type == GameTileContentTipe.Wall)
+        switch (type)
         {
-            tile.Content = _contentFactory.Get(GameTileContentTipe.Empty);
-            FindPath();
-        }
-        else if(tile.Content.Type == GameTileContentTipe.Empty)
-        {
-            tile.Content = _contentFactory.Get(GameTileContentTipe.Wall);
-            if (!FindPath()) // стены должны блокировать проверку поиска пути
-            {
-                tile.Content = _contentFactory.Get(GameTileContentTipe.Empty);
-                FindPath();
-            }
+            case GameTileContentType.Destination:
+                BuildDestination(tile);
+                break;
+            case GameTileContentType.SpawnPoint:
+                BuildSpawnPoint(tile);
+                break;
+            case GameTileContentType.Wall:
+                BuildWall(tile);
+                break;
+            case GameTileContentType.LaserTower:
+                BuildTower(tile, type);
+                break;
+            case GameTileContentType.MortarTower:
+                BuildTower(tile, type);
+                break;
         }
     }
-    public void ToggleTower(GameTile tile, TowerType towerType) // тумблер переключения между обычной клеткой и стеной
+
+    private void BuildDestination(GameTile tile)
     {
-        if (tile.Content.Type == GameTileContentTipe.Tower)
+        if(tile.Content.Type != GameTileContentType.Empty)
+            return;
+        
+        tile.Content = _contentFactory.Get(GameTileContentType.Destination);
+        FindPath();
+    }
+
+    private void BuildSpawnPoint(GameTile tile)
+    {
+        if(tile.Content.Type != GameTileContentType.Empty)
+            return;
+        
+        tile.Content = _contentFactory.Get(GameTileContentType.SpawnPoint);
+        _spawnPoints.Add(tile);
+    }
+    
+    private void BuildWall(GameTile tile)
+    {
+        if(tile.Content.Type != GameTileContentType.Empty)
+            return;
+        
+        tile.Content = _contentFactory.Get(GameTileContentType.Wall);
+        if (FindPath() == false)
         {
-            _contentToUpdate.Remove(tile.Content);
-            tile.Content = _contentFactory.Get(GameTileContentTipe.Empty);
+            tile.Content = _contentFactory.Get(GameTileContentType.Empty);
             FindPath();
         }
-        else if(tile.Content.Type == GameTileContentTipe.Empty)
+    }
+    
+    private void BuildTower(GameTile tile, GameTileContentType type)
+    {
+        if(tile.Content.Type != GameTileContentType.Empty || type <= GameTileContentType.BeforeAttackers)
+            return;
+        
+        tile.Content = _contentFactory.Get(type);
+        if (FindPath())
         {
-            tile.Content = _contentFactory.Get(towerType);
-
-            if (FindPath()) // стены должны блокировать проверку поиска пути
-            {
-                _contentToUpdate.Add(tile.Content);
-            }
-            else
-            {
-                tile.Content = _contentFactory.Get(GameTileContentTipe.Empty);
-                FindPath();
-            }
-        }        
-        else if(tile.Content.Type == GameTileContentTipe.Wall)
-        {
-            tile.Content = _contentFactory.Get(towerType);
             _contentToUpdate.Add(tile.Content);
         }
-    }
-    public void ToggleSpawnPoint(GameTile tile) // тумблер переключения между обычной клеткой и точкой спавна
-    {
-        //точки спавна не влияют на поиск пути, поэтому после их добавления не нужно ничего пересчитывать
-        if (tile.Content.Type == GameTileContentTipe.SpawnPoint)
+        else
         {
-            if (_spawnPoints.Count > 1) // должна быть хотя бы одна точка спавна
-            {
-                _spawnPoints.Remove(tile);
-                tile.Content = _contentFactory.Get(GameTileContentTipe.Empty);
-            }
-        }
-        else if(tile.Content.Type == GameTileContentTipe.Empty)
-        {
-            tile.Content = _contentFactory.Get(GameTileContentTipe.SpawnPoint);
-            _spawnPoints.Add(tile);
+            tile.Content = _contentFactory.Get(GameTileContentType.Empty);
+            FindPath();
         }
     }
-
-    public void ToggleDestination(GameTile tile) // тумблер переключения между обычной клеткой и пунктом назначения
+    
+    private void DestroyDestination(GameTile tile)
     {
-        if (tile.Content.Type == GameTileContentTipe.Destination)
+        if (tile.Content.Type != GameTileContentType.Destination)
+            return;
+        
+        tile.Content = _contentFactory.Get(GameTileContentType.Empty);
+        if (FindPath() == false)
         {
-            tile.Content = _contentFactory.Get(GameTileContentTipe.Empty);
-            if (!FindPath())
-            {
-                tile.Content = _contentFactory.Get(GameTileContentTipe.Destination);
-                FindPath();
-            }
-        }
-        else if(tile.Content.Type == GameTileContentTipe.Empty)
-        {
-            tile.Content = _contentFactory.Get(GameTileContentTipe.Destination);
+            tile.Content = _contentFactory.Get(GameTileContentType.Destination);
             FindPath();
         }
     }
 
-    public GameTile GetTile(Ray ray) // проверяем, что пользователь нажал на клетку
+    private void DestroySpawnPoint(GameTile tile)
+    {
+        if (tile.Content.Type != GameTileContentType.SpawnPoint)
+            return;
+        if (_spawnPoints.Count <= 1) 
+            return;
+        
+        _spawnPoints.Remove(tile);
+        tile.Content = _contentFactory.Get(GameTileContentType.Empty);
+    }
+
+    private void DestroyWall(GameTile tile)
+    {
+        if (tile.Content.Type != GameTileContentType.Wall)
+            return;
+        
+        tile.Content = _contentFactory.Get(GameTileContentType.Empty);
+        FindPath();
+    }
+
+    private void DestroyTower(GameTile tile)
+    {
+        if (tile.Content.Type <= GameTileContentType.BeforeAttackers)
+            return;
+        
+        _contentToUpdate.Remove(tile.Content);
+        tile.Content = _contentFactory.Get(GameTileContentType.Empty);
+        FindPath();
+    }
+
+
+    public GameTile GetTile(Ray ray)
     {
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, float.MaxValue, 1)) // проверяем, попал ли луч во что-то
+        if (Physics.Raycast(ray, out hit, float.MaxValue, 1))
         {
-            int x = (int) (hit.point.x + _size.x * .5f); // определяем клетку, в которую попали
-            int y = (int) (hit.point.z + _size.y * .5f);
-            if (x >= 0 && x < _size.x && y >= 0 && y < _size.y) // проверка на выход за границы поля
+            int x = (int) (hit.point.x + _size.x * 0.5f);
+            int y = (int) (hit.point.z + _size.y * 0.5f);
+            if (x >= 0 && x < _size.x && y >= 0 && y < _size.y)
             {
-                return _tiles[x + y * _size.x]; // преобразование точки пересечения луча в индекс клетки в массиве
+                return _tiles[x + y * _size.x];
             }
         }
 
@@ -238,13 +271,13 @@ public class GameBoard : MonoBehaviour
 
     public void Clear()
     {
-        foreach (var tile in _tiles)
+        foreach (GameTile tile in _tiles)
         {
-            tile.Content = _contentFactory.Get(GameTileContentTipe.Empty);
+            tile.Content = _contentFactory.Get(GameTileContentType.Empty);
         }
         _spawnPoints.Clear();
         _contentToUpdate.Clear();
-        ToggleDestination(_tiles[_tiles.Length / 2]);
-        ToggleSpawnPoint(_tiles[0]);
+        BuildDestination(_tiles[_tiles.Length / 2]);
+        BuildSpawnPoint(_tiles[0]);
     }
 }

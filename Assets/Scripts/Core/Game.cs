@@ -1,13 +1,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
+using System.Threading;
+using System.Threading.Tasks;
+using Common;
+using Core.UI;
+using GameResult;
+using Loading;
 
 //отвечает за основной функционал и управляет игрой
-public class Game : MonoBehaviour
-{
+public class Game : MonoBehaviour, ICleanUp
+{    
+    public IEnumerable<GameObjectFactory> Factories => new GameObjectFactory[]{_contentFactory, 
+        _warFactory, _enemyFactory};
+
+    public string SceneName => Constants.Scenes.QUICK_GAME;
+    
+    private int PlayerHealth
+    {
+        get => _playerHealth;
+        set
+        {
+            _playerHealth = Mathf.Max(0, value);
+            _defenderHud.UpdatePlayerHealth(_playerHealth, _startingPlayerHealth);
+        }
+    }
+    
     [SerializeField] private Vector2Int _boardSize; // задаём игровое поле
     [SerializeField] private GameBoard _board; // ссылка на поле
     [SerializeField] private Camera _mainCamera; // ссылка на главную камеру
@@ -21,13 +43,28 @@ public class Game : MonoBehaviour
     [SerializeField, Range(5f, 30f)] private float _prepareTime = 10f;
     private bool _isScenarioProcess;
 
+    [SerializeField]
+    private TilesBuilder _tilesBuilder = default;
+    [SerializeField] 
+    private DefenderHud _defenderHud;
+    [SerializeField] 
+    private GameResultWindow _gameResultWindow;
+    [SerializeField] 
+    private EnemyFactory _enemyFactory;
+    [SerializeField]
+    private Camera _camera;
+    [SerializeField] 
+    private PrepareGamePanel _prepareGamePanel;
+    
+    private CancellationTokenSource _prepareCancellation;
     private GameBehaviourCollection _enemies = new GameBehaviourCollection();
     private GameBehaviourCollection _nonEnemies = new GameBehaviourCollection();
     private Ray TouchRay => _mainCamera.ScreenPointToRay(Input.mousePosition); // конвертируем позицию мыши в луч
-    private TowerType _currentTowerType;
+    private GameTileContentType _currentTowerType;
     private GameScenario.State _activeScenario;
     private bool _isPaused;
-
+    private int _playerHealth;
+    
     private static Game _instance;
 
     //[SerializeField] private EnemyFactory _enemyFactory;
@@ -41,7 +78,10 @@ public class Game : MonoBehaviour
 
     private void Start()
     {
+        _defenderHud.PauseClicked += OnPauseClicked;
+        _defenderHud.QuitGame += GoToMainMenu;
         _board.Init(_boardSize, _contentFactory);
+        _tilesBuilder.Initialize(_contentFactory, _camera, _board);
         //_activeScenario = _scenario.Begin();
         BeginNewGame();
     }
@@ -59,49 +99,21 @@ public class Game : MonoBehaviour
             BeginNewGame();
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            _currentTowerType = TowerType.Laser;
-        }
-        else  if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            _currentTowerType = TowerType.Mortar;
-        }
-        
-        if (Input.GetMouseButtonDown(0))
-        {
-            HandleTouch();
-        } 
-        else if (Input.GetMouseButtonDown(1))
-        {
-            HandleAlternativeTouch();
-        }
-
         if(_isScenarioProcess)
         {
-            if (_currentPlayerHealth <= 0)
+            var waves = _activeScenario.GetWaves();
+            _defenderHud.UpdateScenarioWaves(waves.currentWave, waves.wavesCount);
+            if (PlayerHealth <= 0)
             {
-                Debug.Log("Defeated!");
-                BeginNewGame();
+                _isScenarioProcess = false;
+                _gameResultWindow.Show(GameResultType.Defeat, BeginNewGame, GoToMainMenu);
             }
-
-            if (!_activeScenario.Progress() && _enemies.IsEmpty)
+            if (_activeScenario.Progress() == false && _enemies.IsEmpty)
             {
-                Debug.Log("Victory!");
-                BeginNewGame();
-                _activeScenario.Progress();
+                _isScenarioProcess = false;
+                _gameResultWindow.Show(GameResultType.Victory, BeginNewGame, GoToMainMenu);
             }
         }
-
-        // Скрипт Game больше не выбирает, когда ему создавать врагов, отключаем логику
-        //_spawnProgress += _spawnSpeed * Time.deltaTime;
-        //while (_spawnProgress >= 1f)
-        //{
-        //    _spawnProgress -= 1f;
-        //    SpawnEnemy();
-        //}
-
-        //_activeScenario.Progress();
 
         _enemies.GameUpdate();
         Physics.SyncTransforms(); // синхронизируем физику
@@ -122,6 +134,12 @@ public class Game : MonoBehaviour
         return explosion;
     }
 
+    public static void EnemyReachedDestination()
+    {
+        _instance._currentPlayerHealth--;
+    }
+
+
     // модифициурем в статику
     // добавляем фабрику, тип врага
     // вызов идет через собственную статическую ссылку
@@ -133,63 +151,51 @@ public class Game : MonoBehaviour
         _instance._enemies.Add(enemy);
     }
 
-    private void HandleTouch() // берём тайл по лучу, если не нулл, присваиваем контент из фабрики
+    public void Cleanup()
     {
-        GameTile tile = _board.GetTile(TouchRay);
-        if (tile != null)
-        {
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                _board.ToggleTower(tile, _currentTowerType);
-            }
-            else
-            {
-                _board.ToggleWall(tile);
-            }
-        }
-    }
-
-    private void HandleAlternativeTouch()
-    {
-        GameTile tile = _board.GetTile(TouchRay);
-        if (tile != null)
-        {
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                _board.ToggleDestination(tile);   
-            }
-            else
-            {
-                _board.ToggleSpawnPoint(tile);
-            }
-        }
-    }
-
-    private void BeginNewGame()
-    {
+        _tilesBuilder.Disabled();
         _isScenarioProcess = false;
-        if (_prepareRoutine != null)
-        {
-            StopCoroutine(_prepareRoutine);
-        }
+        _prepareCancellation?.Cancel();
+        _prepareCancellation?.Dispose();
         _enemies.Clear();
         _nonEnemies.Clear();
         _board.Clear();
-        _currentPlayerHealth = _startingPlayerHealth;
-        _prepareRoutine = StartCoroutine(PrepareRoutine());
+    }
+    
+    private async void BeginNewGame()
+    {
+        Cleanup();
+        _tilesBuilder.Enabled();
+        PlayerHealth = _startingPlayerHealth;
+
+        try
+        {
+            _prepareCancellation?.Dispose();
+            _prepareCancellation = new CancellationTokenSource();
+            if (await _prepareGamePanel.Prepare(_prepareTime, _prepareCancellation.Token))
+            {
+                _activeScenario = _scenario.Begin();
+                _isScenarioProcess = true;
+            }
+        }
+        catch (TaskCanceledException e) {}
     }
 
-    public static void EnemyReachedDestination()
+    private void OnPauseClicked(bool isPause)
     {
-        _instance._currentPlayerHealth--;
+        Time.timeScale = isPause ? 0f : 1f;
     }
 
-    private Coroutine _prepareRoutine;
-
-    private IEnumerator PrepareRoutine()
+    private void GoToMainMenu()
     {
-        yield return new WaitForSeconds(_prepareTime);
-        _activeScenario = _scenario.Begin();
-        _isScenarioProcess = true;
+        var operations = new Queue<ILoadingOperation>();
+        operations.Enqueue(new ClearGameOperation(this));
+        LoadingScreen.Instance.Load(operations);
+    }
+
+    private void OnDestroy()
+    {
+        _defenderHud.PauseClicked -= OnPauseClicked;
+        _defenderHud.QuitGame -= GoToMainMenu;
     }
 }

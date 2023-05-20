@@ -11,7 +11,7 @@ public class LaserTower : Tower
     private Vector3 _laserBeamScale;
     private TargetPoint _target;
 
-    public override TowerType Type => TowerType.Laser;
+    public override GameTileContentType Type => GameTileContentType.LaserTower;
 
     private void Awake()
     {

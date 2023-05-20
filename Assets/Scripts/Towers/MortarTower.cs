@@ -13,7 +13,7 @@ public class MortarTower : Tower
     private float _launchSpeed;
     private float _launchProgress; // стрельба раз в какое-то время 
     
-    public override TowerType Type => TowerType.Mortar;
+    public override GameTileContentType Type => GameTileContentType.MortarTower;
 
     private void Awake()
     {

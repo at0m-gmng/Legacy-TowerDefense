@@ -8,7 +8,7 @@ public abstract class Tower : GameTileContent
     [SerializeField, Range(1.5f, 10.5f)] protected float _targetingRange = 1.5f;
     
 
-    public abstract TowerType Type { get; }
+    public abstract GameTileContentType Type { get; }
 
     protected bool IsAcquireTarget(out TargetPoint target)
     {

@@ -6,11 +6,11 @@ using System;
 [CreateAssetMenu]
 public class EnemyWave: ScriptableObject
 {
-    [SerializeField] private EnemySpawnSequence[] _spawnSequences; // каждая волна содержит массив последовательности врагов
+    [SerializeField] private EnemySpawnSequence[] _spawnSequences; // РєР°Р¶РґР°СЏ РІРѕР»РЅР° СЃРѕРґРµСЂР¶РёС‚ РјР°СЃСЃРёРІ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё РІСЂР°РіРѕРІ
 
-    // обновляет очереди и проверяет, когда они закончились
+    // РѕР±РЅРѕРІР»СЏРµС‚ РѕС‡РµСЂРµРґРё Рё РїСЂРѕРІРµСЂСЏРµС‚, РєРѕРіРґР° РѕРЅРё Р·Р°РєРѕРЅС‡РёР»РёСЃСЊ
     [Serializable]
-    public struct State // хранит текущую волну, её состояние и индекс 
+    public struct State // С…СЂР°РЅРёС‚ С‚РµРєСѓС‰СѓСЋ РІРѕР»РЅСѓ, РµС‘ СЃРѕСЃС‚РѕСЏРЅРёРµ Рё РёРЅРґРµРєСЃ 
     {
         private EnemyWave _wave;
         private int _index;
@@ -20,7 +20,7 @@ public class EnemyWave: ScriptableObject
         {
             _wave = wave;
             _index = 0;
-            _sequence = _wave._spawnSequences[0].Begin(); // запускаем первую волну
+            _sequence = _wave._spawnSequences[0].Begin(); // Р·Р°РїСѓСЃРєР°РµРј РїРµСЂРІСѓСЋ РІРѕР»РЅСѓ
         }
 
         public float Progress(float deltaTime) // 
@@ -28,11 +28,11 @@ public class EnemyWave: ScriptableObject
             deltaTime = _sequence.Progress(deltaTime);
             while(deltaTime>=0f)
             {
-                if(++_index >= _wave._spawnSequences.Length) // если очередь вернула положит число
+                if(++_index >= _wave._spawnSequences.Length) // РµСЃР»Рё РѕС‡РµСЂРµРґСЊ РІРµСЂРЅСѓР»Р° РїРѕР»РѕР¶РёС‚ С‡РёСЃР»Рѕ
                 {
                     return deltaTime;
                 }
-                _sequence = _wave._spawnSequences[_index].Begin(); // двигаемся к следующей волне
+                _sequence = _wave._spawnSequences[_index].Begin(); // РґРІРёРіР°РµРјСЃСЏ Рє СЃР»РµРґСѓСЋС‰РµР№ РІРѕР»РЅРµ
                 deltaTime = _sequence.Progress(deltaTime);
             }
             return -1f;
