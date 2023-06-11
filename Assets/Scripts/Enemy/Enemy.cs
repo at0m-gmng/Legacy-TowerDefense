@@ -11,7 +11,7 @@ public class Enemy : GameBehaviour
     private Direction _direction;
     private DirectionChange _directionChange;
     private float _directionAngleFrom, _directionAngleTo;
-    private float _pathOffset, _speedRange;
+    private float _pathOffset, _speedRange, _originalSpeed;
 
     public float Scale { get; private set; }
     public float Health { get; private set; }
@@ -19,6 +19,7 @@ public class Enemy : GameBehaviour
     
     public void Init(float scale, float pathOffset, float speedRange, float health)
     {
+        _originalSpeed = speedRange;
         _model.localScale = new Vector3(scale, scale, scale);
         _pathOffset = pathOffset;
         _speedRange = speedRange;
@@ -81,6 +82,13 @@ public class Enemy : GameBehaviour
         Health -= damage;
     }
 
+    public void SetSpeed(float factor)
+    {
+        _speedRange = _originalSpeed * factor;
+        HandleDirection();
+        _enemyView.SetSpeedFactor(factor);
+    }
+
     public override void Recycle()
     {
         OriginFactory.Reclaim(this);
@@ -130,7 +138,12 @@ public class Enemy : GameBehaviour
         _directionChange = _direction.GetDirectionChangeTo(_tileFrom.PathDirection);
         _direction = _tileFrom.PathDirection;
         _directionAngleFrom = _directionAngleTo;
+        
+        HandleDirection();
+    }
 
+    private void HandleDirection()
+    {
         switch (_directionChange)
         {
             case DirectionChange.None: PrepareForward();

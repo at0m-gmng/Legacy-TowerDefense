@@ -18,3 +18,4 @@ MonoBehaviour:
   _spawnPointPref: {fileID: 5122477335355819225, guid: 61c8fd7726125734f96404a11dd870a1, type: 3}
   _laserTower: {fileID: 5788422063028478739, guid: 8656be5b6c7b3fd43b7d2f94aa80340a, type: 3}
   _mortarTower: {fileID: 6679300931101189770, guid: 6b94dfaf940933e46be0a1671d52a133, type: 3}
+  _iceObstacle: {fileID: 4757723463661534434, guid: a443bf97534d45e408c85b668097df29, type: 3}

@@ -48,12 +48,8 @@ public class GameBoard : MonoBehaviour
                 if ((y & 1) == 0) // для у наоборот, для создания шахматного порядка
                     tile.IsAlternative = !tile.IsAlternative;
 
-                //tile.Content = _contentFactory.Get(GameTileContentTipe.Empty); // добавим пустой контент из фабрики всем клеткам
             }
         }
-        //ToggleDestination(_tiles[_tiles.Length/2]); // устанавливаем при старте одну начальную позицию в центре
-        //ToggleSpawnPoint(_tiles[0]); // первый элемент как точка спавна по умолчанию
-        //FindPath();
         Clear();
     }
 
@@ -67,15 +63,6 @@ public class GameBoard : MonoBehaviour
 
     public bool FindPath() // метод по поиску пути
     {
-        // foreach (var tile in _tiles) // обнуляем все клетки
-        // {
-        //     tile.ClearPath();
-        // }
-        //
-        // int destinationIndex = _tiles.Length / 2; // середина пункт назначения
-        // _tiles[destinationIndex].BecomeDistanation();
-        // _searchFrontier.Enqueue(item: _tiles[destinationIndex]); // добавляем в очередь
-        
         foreach (var t in _tiles) // т.к путей может быть несколько, добавим их в границу поиска
         {
             if (t.Content.Type == GameTileContentType.Destination)
@@ -113,10 +100,6 @@ public class GameBoard : MonoBehaviour
                     _searchFrontier.Enqueue(item: tile.GrowPathSouth);
                     _searchFrontier.Enqueue(item: tile.GrowPathNorth);
                 }
-                // _searchFrontier.Enqueue(item: tile.GrowPathNorth);
-                // _searchFrontier.Enqueue(item: tile.GrowPathWest);
-                // _searchFrontier.Enqueue(item: tile.GrowPathSouth);
-                // _searchFrontier.Enqueue(item: tile.GrowPathEast);
             }
         }
         foreach (var t in _tiles)
@@ -153,6 +136,9 @@ public class GameBoard : MonoBehaviour
             case GameTileContentType.MortarTower:
                 BuildTower(tile, type);
                 break;
+            case GameTileContentType.Ice:
+                BuildIce(tile);
+                break;
         }
     }
 
@@ -185,6 +171,15 @@ public class GameBoard : MonoBehaviour
             tile.Content = _contentFactory.Get(GameTileContentType.Empty);
             FindPath();
         }
+    }
+    
+    private void BuildIce(GameTile tile)
+    {
+        if(tile.Content.Type != GameTileContentType.Empty)
+            return;
+        
+        tile.Content = _contentFactory.Get(GameTileContentType.Ice);
+        _contentToUpdate.Add(tile.Content);
     }
     
     private void BuildTower(GameTile tile, GameTileContentType type)

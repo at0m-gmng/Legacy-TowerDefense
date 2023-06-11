@@ -94,6 +94,8 @@
      <Compile Include="Assets\Scripts\UI\ICleanUp.cs" />
      <Compile Include="Assets\Scripts\Towers\MortarTower.cs" />
      <Compile Include="Assets\Scripts\Loading\UserInfoContainer.cs" />
+     <Compile Include="Assets\Scripts\Towers\Ice\IceObstacle.cs" />
+     <Compile Include="Assets\Scripts\Towers\Ice\IceTrigger.cs" />
      <Folder Include="Assets" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\Alien.shader" />
      <Folder Include="Assets\3D Game Kit - Character Pack\Characters\Chomper\Textures" />
@@ -126,6 +128,7 @@
      <Folder Include="Assets\3D Game Kit - Character Pack\Characters\Grenadier\Models" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\EyeBallsHD.shader" />
      <Folder Include="Assets\Scripts\Loading" />
+     <Folder Include="Assets\Scripts\Towers\Ice" />
      <Folder Include="Assets\3D Game Kit - Character Pack" />
      <Folder Include="Assets\3D Game Kit - Character Pack\Characters\Chomper\Models" />
      <Folder Include="Assets\3D Game Kit - Character Pack\Characters\Chomper\AnimationClips" />
