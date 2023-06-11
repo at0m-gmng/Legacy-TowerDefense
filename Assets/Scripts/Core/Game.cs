@@ -102,7 +102,10 @@ public class Game : MonoBehaviour, ICleanUp
         if(_isScenarioProcess)
         {
             var waves = _activeScenario.GetWaves();
-            _defenderHud.UpdateScenarioWaves(waves.currentWave, waves.wavesCount);
+            if (waves.currentWave <= waves.wavesCount)
+            {
+                _defenderHud.UpdateScenarioWaves(waves.currentWave, waves.wavesCount);
+            }
             if (PlayerHealth <= 0)
             {
                 _isScenarioProcess = false;
@@ -136,9 +139,8 @@ public class Game : MonoBehaviour, ICleanUp
 
     public static void EnemyReachedDestination()
     {
-        _instance._currentPlayerHealth--;
+        _instance.PlayerHealth--;
     }
-
 
     // модифициурем в статику
     // добавляем фабрику, тип врага

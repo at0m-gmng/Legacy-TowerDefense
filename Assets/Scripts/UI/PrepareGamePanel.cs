@@ -2,11 +2,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PrepareGamePanel : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject[] _colors;
+    [FormerlySerializedAs("_colors")] [SerializeField]
+    private GameObject[] countDownObjects;
     [SerializeField]
     private GameObject _go;
     [SerializeField]
@@ -19,26 +20,32 @@ public class PrepareGamePanel : MonoBehaviour
         Reset();
         gameObject.SetActive(true);
         
-        var elementsCount = _colors.Length + 1;
+        var elementsCount = countDownObjects.Length + 1;
         var unitTime = seconds / elementsCount;
 
-        for (var i = 0; i < _colors.Length; i++)
+        for (var i = 0; i < countDownObjects.Length; i++)
         {
-            if(i > 0)
-                _colors[i - 1].transform.localScale = _defaultScale;
-            _colors[i].transform.localScale = _bigScale;
-            await Task.Delay(TimeSpan.FromSeconds(unitTime), cancellationToken);
-
-            if (cancellationToken.IsCancellationRequested)
+            countDownObjects[i].gameObject.SetActive(true);
+            if (i > 0)
             {
+                countDownObjects[i - 1].transform.localScale = _defaultScale;
+            }
+            
+            countDownObjects[i].transform.localScale = _bigScale;
+            
+            await Task.Delay(TimeSpan.FromSeconds(unitTime), cancellationToken);
+            
+            if (cancellationToken.IsCancellationRequested)
+            {            
                 gameObject.SetActive(false);
                 return false;
             }
+            countDownObjects[i].SetActive(false);
         }
         
-        foreach (var c in _colors)
+        foreach (var countDownObject in countDownObjects)
         {
-            c.gameObject.SetActive(false);
+            countDownObject.gameObject.SetActive(false);
         }
         _go.SetActive(true);
         
@@ -55,10 +62,10 @@ public class PrepareGamePanel : MonoBehaviour
 
     private void Reset()
     {
-        foreach (var c in _colors)
+        foreach (var countDownObject in countDownObjects)
         {
-           c.transform.localScale = _defaultScale;
-           c.gameObject.SetActive(true);
+           countDownObject.transform.localScale = _defaultScale;
+           countDownObject.gameObject.SetActive(false);
         }
         _go.SetActive(false);
     }

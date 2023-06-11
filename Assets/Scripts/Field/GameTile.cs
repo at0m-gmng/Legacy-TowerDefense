@@ -8,7 +8,7 @@ public class GameTile : MonoBehaviour
     [SerializeField] private Transform _arrow; // стрелка направления
 
     private GameTile _north, _east, _south, _west, _nextOnPath; //переменные для нахождение соседей и следующей клетки на поля
-    private GameTileContent _content; // ссылка на контент
+    public GameTileContent _content; // ссылка на контент
     private int _distance; // кол-во ячеек до пункта назначения
     
     private Quaternion _northRotation = Quaternion.Euler(90f, 0f, 90f); // переменные вращения для каждого направления

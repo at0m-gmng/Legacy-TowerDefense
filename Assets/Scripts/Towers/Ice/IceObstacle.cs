@@ -26,8 +26,17 @@ public class IceObstacle : GameTileContent
 
     private void OnTriggerExitAction(TargetPoint targetPoint)
     {
-        var guildGlobal = _globalTargetStorage[targetPoint];
-        var guildInternal =_internalTargetStorage[targetPoint];
+        Guid guildGlobal = default;
+        Guid guildInternal = default;
+        if (_globalTargetStorage.ContainsKey(targetPoint))
+        {
+            guildGlobal = _globalTargetStorage[targetPoint];
+        }
+        if (_internalTargetStorage.ContainsKey(targetPoint))
+        {
+            guildInternal =_internalTargetStorage[targetPoint];
+        }
+        
         if (guildGlobal != guildInternal)
         {
             return;

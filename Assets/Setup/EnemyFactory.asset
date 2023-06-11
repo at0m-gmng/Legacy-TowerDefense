@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a11e05a2ca894c8ca07495637e0feec5, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b1b237dc8ce83e4ab356888c2e849bc, type: 3}
   m_Name: EnemyFactory
   m_EditorClassIdentifier: 
   _small:
@@ -27,7 +27,7 @@ MonoBehaviour:
       _min: 140
       _max: 180
   _medium:
-    EnemyPref: {fileID: 883351683532599516, guid: f861850418c57634ea63ab12ae624d88, type: 3}
+    EnemyPref: {fileID: 998669896641354974, guid: abb12b2e66c2d2f41bd3aab2d59d75f8, type: 3}
     Scale:
       _min: 1
       _max: 1.5
@@ -35,8 +35,8 @@ MonoBehaviour:
       _min: -0.1
       _max: 0.1
     SpeedRange:
-      _min: 1.2
-      _max: 1.7
+      _min: 0.8
+      _max: 1.2
     Health:
       _min: 400
       _max: 500

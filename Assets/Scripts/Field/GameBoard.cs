@@ -117,131 +117,27 @@ public class GameBoard : MonoBehaviour
         return true;
     }
 
-    public void Build(GameTile tile, GameTileContentType type)
+    public bool TryBuild(GameTile tile, GameTileContent content)
     {
-        switch (type)
+        if (tile.Content.Type != GameTileContentType.Empty)
         {
-            case GameTileContentType.Destination:
-                BuildDestination(tile);
-                break;
-            case GameTileContentType.SpawnPoint:
-                BuildSpawnPoint(tile);
-                break;
-            case GameTileContentType.Wall:
-                BuildWall(tile);
-                break;
-            case GameTileContentType.LaserTower:
-                BuildTower(tile, type);
-                break;
-            case GameTileContentType.MortarTower:
-                BuildTower(tile, type);
-                break;
-            case GameTileContentType.Ice:
-                BuildIce(tile);
-                break;
+            return false;
         }
-    }
 
-    private void BuildDestination(GameTile tile)
-    {
-        if(tile.Content.Type != GameTileContentType.Empty)
-            return;
-        
-        tile.Content = _contentFactory.Get(GameTileContentType.Destination);
-        FindPath();
-    }
-
-    private void BuildSpawnPoint(GameTile tile)
-    {
-        if(tile.Content.Type != GameTileContentType.Empty)
-            return;
-        
-        tile.Content = _contentFactory.Get(GameTileContentType.SpawnPoint);
-        _spawnPoints.Add(tile);
-    }
-    
-    private void BuildWall(GameTile tile)
-    {
-        if(tile.Content.Type != GameTileContentType.Empty)
-            return;
-        
-        tile.Content = _contentFactory.Get(GameTileContentType.Wall);
+        tile.Content = content;
         if (FindPath() == false)
         {
             tile.Content = _contentFactory.Get(GameTileContentType.Empty);
-            FindPath();
+            return false;
         }
-    }
-    
-    private void BuildIce(GameTile tile)
-    {
-        if(tile.Content.Type != GameTileContentType.Empty)
-            return;
-        
-        tile.Content = _contentFactory.Get(GameTileContentType.Ice);
-        _contentToUpdate.Add(tile.Content);
-    }
-    
-    private void BuildTower(GameTile tile, GameTileContentType type)
-    {
-        if(tile.Content.Type != GameTileContentType.Empty || type <= GameTileContentType.BeforeAttackers)
-            return;
-        
-        tile.Content = _contentFactory.Get(type);
-        if (FindPath())
+
+        _contentToUpdate.Add(content);
+        if (content.Type == GameTileContentType.SpawnPoint)
         {
-            _contentToUpdate.Add(tile.Content);
+            _spawnPoints.Add(tile);
         }
-        else
-        {
-            tile.Content = _contentFactory.Get(GameTileContentType.Empty);
-            FindPath();
-        }
+        return true;
     }
-    
-    private void DestroyDestination(GameTile tile)
-    {
-        if (tile.Content.Type != GameTileContentType.Destination)
-            return;
-        
-        tile.Content = _contentFactory.Get(GameTileContentType.Empty);
-        if (FindPath() == false)
-        {
-            tile.Content = _contentFactory.Get(GameTileContentType.Destination);
-            FindPath();
-        }
-    }
-
-    private void DestroySpawnPoint(GameTile tile)
-    {
-        if (tile.Content.Type != GameTileContentType.SpawnPoint)
-            return;
-        if (_spawnPoints.Count <= 1) 
-            return;
-        
-        _spawnPoints.Remove(tile);
-        tile.Content = _contentFactory.Get(GameTileContentType.Empty);
-    }
-
-    private void DestroyWall(GameTile tile)
-    {
-        if (tile.Content.Type != GameTileContentType.Wall)
-            return;
-        
-        tile.Content = _contentFactory.Get(GameTileContentType.Empty);
-        FindPath();
-    }
-
-    private void DestroyTower(GameTile tile)
-    {
-        if (tile.Content.Type <= GameTileContentType.BeforeAttackers)
-            return;
-        
-        _contentToUpdate.Remove(tile.Content);
-        tile.Content = _contentFactory.Get(GameTileContentType.Empty);
-        FindPath();
-    }
-
 
     public GameTile GetTile(Ray ray)
     {
@@ -272,7 +168,7 @@ public class GameBoard : MonoBehaviour
         }
         _spawnPoints.Clear();
         _contentToUpdate.Clear();
-        BuildDestination(_tiles[_tiles.Length / 2]);
-        BuildSpawnPoint(_tiles[0]);
+        TryBuild(_tiles[_tiles.Length / 2], _contentFactory.Get(GameTileContentType.Destination));
+        TryBuild(_tiles[0], _contentFactory.Get(GameTileContentType.SpawnPoint));
     }
 }

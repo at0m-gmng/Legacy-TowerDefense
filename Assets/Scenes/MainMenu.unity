@@ -1056,7 +1056,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &488574935
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1421,8 +1421,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 130, y: -130}
-  m_SizeDelta: {x: 300, y: 80}
+  m_AnchoredPosition: {x: 171.92914, y: -160.49387}
+  m_SizeDelta: {x: 383.858, y: 140.988}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &697479078
 MonoBehaviour:
@@ -1450,14 +1450,16 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 4
-    m_MaxSize: 40
+    m_MaxSize: 60
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: LOGO HERE
+  m_Text: 'TOWER
+
+    DEFENCE'
 --- !u!222 &697479079
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2530,7 +2532,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1601265554
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4283,7 +4285,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &5423366783827402471
 MonoBehaviour:
   m_ObjectHideFlags: 0

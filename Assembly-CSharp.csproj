@@ -54,6 +54,7 @@
      <Compile Include="Assets\Scripts\UI\PrepareGamePanel.cs" />
      <Compile Include="Assets\Scripts\Enemy\EnemyType.cs" />
      <Compile Include="Assets\Scripts\Loading\GameLoadingOperation.cs" />
+     <Compile Include="Assets\Scripts\Towers\Ice\IceObstacle.cs" />
      <Compile Include="Assets\Scripts\Factory\GameTileContentFactory.cs" />
      <Compile Include="Assets\Scripts\Enemy\EnemyView\EnemyView.cs" />
      <Compile Include="Assets\Scripts\Core\Game.cs" />
@@ -85,6 +86,7 @@
      <Compile Include="Assets\Scripts\Field\GameTileContent.cs" />
      <Compile Include="Assets\Scripts\Towers\Shell.cs" />
      <Compile Include="Assets\Scripts\Building\TilesBuilder.cs" />
+     <Compile Include="Assets\Scripts\Towers\Ice\IceTrigger.cs" />
      <Compile Include="Assets\Scripts\Field\GameTile.cs" />
      <Compile Include="Assets\Scripts\Core\GameBehaviourCollection.cs" />
      <Compile Include="Assets\Scripts\Loading\DeviceInfoProvider.cs" />
@@ -94,8 +96,8 @@
      <Compile Include="Assets\Scripts\UI\ICleanUp.cs" />
      <Compile Include="Assets\Scripts\Towers\MortarTower.cs" />
      <Compile Include="Assets\Scripts\Loading\UserInfoContainer.cs" />
-     <Compile Include="Assets\Scripts\Towers\Ice\IceObstacle.cs" />
-     <Compile Include="Assets\Scripts\Towers\Ice\IceTrigger.cs" />
+     <Compile Include="Assets\Scripts\Factory\GeneralEnemyFactory.cs" />
+     <Compile Include="Assets\Scripts\Factory\EnemyConfig.cs" />
      <Folder Include="Assets" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\Alien.shader" />
      <Folder Include="Assets\3D Game Kit - Character Pack\Characters\Chomper\Textures" />

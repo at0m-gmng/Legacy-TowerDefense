@@ -26,15 +26,11 @@ namespace Core.UI
             _quitButton.onClick.AddListener(OnQuitButtonClicked);
         }
 
-        public void UpdatePlayerHealth(float currentHp, float maxHp)
-        {
-            _playerHealthText.text = $"{(int)(currentHp / maxHp * 100)}%";
-        }
+        public void UpdatePlayerHealth(float currentHp, float maxHp) 
+            => _playerHealthText.text = $"{(int)(currentHp / maxHp * 100)}%";
 
-        public void UpdateScenarioWaves(int currentWave, int wavesCount)
-        {
-            _wavesText.text = $"{currentWave}/{wavesCount}";
-        }
+        public void UpdateScenarioWaves(int currentWave, int wavesCount) 
+            => _wavesText.text = $"{currentWave}/{wavesCount}";
 
         private async void OnQuitButtonClicked()
         {
@@ -45,14 +41,8 @@ namespace Core.UI
                 QuitGame?.Invoke();
         }
         
-        private void OnPauseClicked(bool isPaused)
-        {
-            PauseClicked?.Invoke(isPaused);
-        }
-        
-        private void OnDestroy()
-        {
-            _pauseToggle.ValueChanged -= OnPauseClicked;
-        }
+        private void OnPauseClicked(bool isPaused) => PauseClicked?.Invoke(isPaused);
+
+        private void OnDestroy() => _pauseToggle.ValueChanged -= OnPauseClicked;
     }
 }
